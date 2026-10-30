@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#fe5196">
+    <meta name="description" content="Candy Crush Saga - A vibrant, high-performance static match-3 puzzle game ready for GitHub Pages">
+    <title>Candy Crush Saga - Match 3 Puzzle</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23ff2e63'/><circle cx='38' cy='36' r='10' fill='%23ffffff' opacity='0.7'/></svg>">
+</head>
+<body>
+    <!-- Background Floating Candy Bubbles -->
+    <div class="bg-bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- Main Game Frame -->
+    <main class="game-container">
+        <!-- Header Bar -->
+        <header class="header-bar">
+            <div class="game-logo">
+                <span class="logo-text">Candy Crush</span>
+                <span class="logo-tag">Saga</span>
+            </div>
+            <div class="header-actions">
+                <button id="btn-how-to-play" class="icon-btn" title="How to Play" aria-label="How to Play">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+                    </svg>
+                </button>
+                <button id="btn-mute" class="icon-btn" title="Toggle Sound" aria-label="Toggle Sound">
+                    <!-- Dynamic audio icon updated via JS -->
+                </button>
+                <button id="btn-restart" class="icon-btn" title="Restart Level" aria-label="Restart Level">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- HUD: Level, Stars, Score, Moves -->
+        <section class="hud-banner">
+            <div class="hud-top">
+                <span id="level-name" class="level-badge">Lvl 1: Sweet Valley</span>
+                <span class="target-badge">Target: <strong id="target-value">1,500</strong></span>
+            </div>
+
+            <!-- Star Progress Meter -->
+            <div class="star-meter-wrap">
+                <div id="star-progress-fill" class="star-progress-fill"></div>
+                <div class="star-anchors">
+                    <span id="star-1" class="star-anchor anchor-1">★</span>
+                    <span id="star-2" class="star-anchor anchor-2">★</span>
+                    <span id="star-3" class="star-anchor anchor-3">★</span>
+                </div>
+            </div>
+
+            <!-- Stats Counters -->
+            <div class="hud-stats">
+                <div class="stat-card score-card">
+                    <span class="stat-label">Score</span>
+                    <span id="score-value" class="stat-val">0</span>
+                </div>
+                <div class="stat-card moves-card">
+                    <span class="stat-label">Moves</span>
+                    <span id="moves-value" class="stat-val">25</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8x8 Board Container -->
+        <div class="board-container" id="board-container">
+            <!-- Checkerboard background tiles -->
+            <div class="tile-slots-grid" id="tile-slots"></div>
+
+            <!-- Candies -->
+            <div class="candy-grid" id="candy-grid"></div>
+
+            <!-- High-speed Canvas FX Overlay (Pops, Lasers, Shockwaves, Confetti) -->
+            <canvas class="fx-canvas" id="fx-canvas"></canvas>
+
+            <!-- Reshuffle Notification Banner -->
+            <div class="shuffle-banner hidden" id="shuffle-banner">No Moves! Shuffling...</div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <button id="btn-hint" class="pill-btn primary" title="Show Hint">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-1.3l-.85-.6C7.8 13.16 7 11.18 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.18-.8 4.16-2.15 5.1z"/>
+                </svg>
+                Hint
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal: Level Victory -->
+    <div id="modal-win" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2 class="modal-title win-text">Level Passed!</h2>
+            <p class="modal-subtitle">Sugar Crush! Delicious work!</p>
+            <div class="modal-stars">
+                <span id="win-star-1" class="modal-star">★</span>
+                <span id="win-star-2" class="modal-star">★</span>
+                <span id="win-star-3" class="modal-star">★</span>
+            </div>
+            <div class="modal-summary-box">
+                <div class="summary-item">
+                    <span class="summary-label">Final Score</span>
+                    <span id="win-score" class="summary-value">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Target</span>
+                    <span id="win-target" class="summary-value">1,500</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-retry-win" class="pill-btn">Replay</button>
+                <button id="btn-next-level" class="pill-btn primary">Next Level</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Out of Moves / Game Over -->
+    <div id="modal-gameover" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2 class="modal-title fail-text">Out of Moves!</h2>
+            <p class="modal-subtitle">So close! Give it another try!</p>
+            <div class="modal-summary-box">
+                <div class="summary-item">
+                    <span class="summary-label">Your Score</span>
+                    <span id="fail-score" class="summary-value">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Target Needed</span>
+                    <span id="fail-target" class="summary-value">1,500</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-try-again" class="pill-btn primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: How to Play Guide -->
+    <div id="modal-instructions" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2 class="modal-title win-text">How to Play</h2>
+            <div class="guide-list">
+                <div class="guide-item">
+                    <div class="guide-icon">🍬</div>
+                    <div>
+                        <div class="guide-heading">Match 3 Candies</div>
+                        <div class="guide-desc">Swap adjacent candies by clicking or swiping horizontally or vertically to line up 3 of the same color.</div>
+                    </div>
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon">⚡</div>
+                    <div>
+                        <div class="guide-heading">Striped Candy (Match 4)</div>
+                        <div class="guide-desc">Match 4 candies in a row. When triggered, it blasts an entire row or column of candies!</div>
+                    </div>
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon">🎁</div>
+                    <div>
+                        <div class="guide-heading">Wrapped Candy (L or T Shape)</div>
+                        <div class="guide-desc">Match 5 in an L or T formation. Triggers a double 3x3 explosive candy blast!</div>
+                    </div>
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon">🌈</div>
+                    <div>
+                        <div class="guide-heading">Color Bomb (Match 5)</div>
+                        <div class="guide-desc">Match 5 in a straight line. Swap it with any candy to clear all candies of that color from the board!</div>
+                    </div>
+                </div>
+                <div class="guide-item">
+                    <div class="guide-icon">💥</div>
+                    <div>
+                        <div class="guide-heading">Special Combos</div>
+                        <div class="guide-desc">Swap two special candies together for massive cross-screen combos (e.g. Color Bomb + Striped)!</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-close-modal" class="pill-btn primary">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts -->
+    <script src="js/candy-types.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
+
